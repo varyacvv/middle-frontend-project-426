@@ -11,8 +11,8 @@
 и личный кабинет с историей заказов. Приложение деплоится в прод с третьего шага
 и развивается под собственными браузерными тестами.
 
-Учебный проект Хекслета: https://ru.hexlet.io/programs/middle-frontend
-Как это должно работать: https://files.hexlet.app/a/qf7bsq
+Учебный проект Хекслета: <https://ru.hexlet.io/programs/middle-frontend>
+Как это должно работать: <https://files.hexlet.app/a/qf7bsq>
 
 ## Стек
 
