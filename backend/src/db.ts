@@ -1,12 +1,16 @@
 import dotenv from "dotenv";
 import { Pool } from "pg";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: resolve(__dirname, "../../.env") });
+const envPath = resolve(__dirname, "../../.env");
+if (existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+}
 
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) {
