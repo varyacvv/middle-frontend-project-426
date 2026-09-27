@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: pc_parts
+          POSTGRES_PASSWORD: pc_parts
+          POSTGRES_DB: pc_parts
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pc_parts"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install backend deps
+        run: npm --prefix backend ci
+
+      - name: Install frontend deps
+        run: npm --prefix frontend ci
+
+      - name: Install e2e deps
+        run: npm --prefix e2e ci
+
+      - name: Build frontend
+        run: npm run build:frontend
+
+      - name: Build backend
+        run: npm run build:backend
+
+      - name: Start app
+        env:
+          DATABASE_URL: postgres://pc_parts:pc_parts@localhost:5432/pc_parts
+          PORT: 3000
+        run: |
+          node backend/dist/index.js > /tmp/app.log 2>&1 &
+          echo $! > /tmp/app.pid
+
+      - name: Wait for app readiness
+        run: |
+          for i in {1..30}; do
+            if curl -sf http://localhost:3000/api/health > /dev/null; then
+              echo "App is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "App did not become ready in 30 seconds"
+          echo "--- app log ---"
+          cat /tmp/app.log
+          exit 1
+
+      - name: Install Playwright browsers
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run e2e tests
+        env:
+          BASE_URL: http://localhost:3000
+        run: npm --prefix e2e test
+
+      - name: Show app log on failure
+        if: failure()
+        run: cat /tmp/app.log
