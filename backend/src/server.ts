@@ -13,11 +13,6 @@ export function buildServer() {
     return { status: "ok" };
   });
 
-  // Удалить после проверки
-  server.get("/api/debug-sentry", async () => {
-    throw new Error("Test error from backend");
-  });
-
   server.register(fastifyStatic, {
     root: resolve(__dirname, "../../frontend/dist"),
     prefix: "/",

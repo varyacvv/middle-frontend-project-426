@@ -14,6 +14,10 @@
 Учебный проект Хекслета: <https://ru.hexlet.io/programs/middle-frontend>
 Как это должно работать: <https://files.hexlet.app/a/qf7bsq>
 
+## Прод
+
+<https://middle-frontend-project-426-vp2e.onrender.com>
+
 ## Стек
 
 - JavaScript
@@ -30,8 +34,36 @@ cd middle-frontend-project-426
 ## Использование
 
 <!-- Добавьте примеры запуска и запись asciinema — именно это смотрит работодатель -->
+- Поднять локальный PostgreSQL.
 
----
+```bash
+docker compose up -d
+```
+
+- Установить зависимости.
+
+```bash
+npm --prefix frontend install
+npm --prefix backend install
+```
+
+- Создать .env в корне со строкой подключения.
+
+```bash
+DATABASE_URL=postgres://pc_parts:pc_parts@localhost:5432/pc_parts
+```
+
+- Запустить backend (в отдельном терминале).
+
+```bash
+npm run dev:backend
+```
+
+- Запустить frontend (в отдельном терминале).
+
+```bash
+npm run dev:frontend
+```
 
 <details>
 <summary>Автоматические тесты Хекслета</summary>
