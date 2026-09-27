@@ -7,6 +7,7 @@
     "compile": "tsp compile ."
   },
   "devDependencies": {
+    "@stoplight/prism-cli": "^5.15.11",
     "@typespec/compiler": "^1.16.0",
     "@typespec/http": "^1.16.0",
     "@typespec/openapi3": "^1.16.0"

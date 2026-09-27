@@ -10,6 +10,7 @@
     "api:compile": "npm --prefix api run compile",
     "api:schemas": "npx --prefix backend openapi-box api/openapi.yaml -o backend/src/schemas.ts",
     "api:types": "npx --prefix frontend openapi-typescript api/openapi.yaml -o frontend/src/api-types.ts",
-    "api:generate": "npm run api:compile && npm run api:schemas && npm run api:types"
+    "api:generate": "npm run api:compile && npm run api:schemas && npm run api:types",
+    "api:mock": "npx --prefix api prism mock api/openapi.yaml"
   }
 }
