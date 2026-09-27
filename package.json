@@ -6,6 +6,10 @@
     "dev:frontend": "npm --prefix frontend run dev",
     "build:frontend": "npm --prefix frontend run build",
     "dev:backend": "npm --prefix backend run dev",
-    "build:backend": "npm --prefix backend run build"
+    "build:backend": "npm --prefix backend run build",
+    "api:compile": "npm --prefix api run compile",
+    "api:schemas": "npx --prefix backend openapi-box api/openapi.yaml -o backend/src/schemas.ts",
+    "api:types": "npx --prefix frontend openapi-typescript api/openapi.yaml -o frontend/src/api-types.ts",
+    "api:generate": "npm run api:compile && npm run api:schemas && npm run api:types"
   }
 }

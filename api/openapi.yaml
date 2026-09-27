@@ -1,0 +1,44 @@
+openapi: 3.0.0
+info:
+  title: PC Parts Shop API
+  version: 0.0.0
+tags: []
+paths:
+  /api/health:
+    get:
+      operationId: health
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                required:
+                  - status
+components:
+  schemas:
+    ApiError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      description: Common API error format shared by all endpoints
+    Money:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: integer
+          format: int32
+      description: Money amount in rubles
