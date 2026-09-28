@@ -1,3 +1,236 @@
 * {
   box-sizing: border-box;
 }
+
+body {
+  margin: 0;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background: #fafafa;
+  color: #1f2937;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.header {
+  background: #fff;
+  padding: 18px 40px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: #111827;
+  text-decoration: none;
+  gap: 8px;
+}
+
+.logo-mark {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #4e5fe1;
+  border-radius: 2px;
+}
+
+.header-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.header-nav a {
+  color: #4b5563;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.header-nav a:hover {
+  color: #4e5fe1;
+}
+
+.btn-primary {
+  background: #4e5fe1;
+  color: #fff !important;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #3d4dc9;
+}
+
+.btn-light {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.btn-light:hover {
+  background: #e5e7eb;
+}
+
+.footer {
+  background: #fff;
+  padding: 24px 40px;
+  border-top: 1px solid #e5e7eb;
+  color: #9ca3af;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 80px;
+}
+
+.footer a {
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #4e5fe1;
+}
+
+.auth-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 32px;
+}
+
+.auth-card h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.auth-card > p:first-of-type {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 28px;
+}
+
+.auth-card label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+.auth-card input {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  margin-top: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.auth-card input:focus {
+  border-color: #4e5fe1;
+  box-shadow: 0 0 0 3px rgba(78, 95, 225, 0.1);
+}
+
+.auth-card form button {
+  width: 100%;
+  padding: 12px;
+  background: #4e5fe1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.auth-card form button:hover {
+  background: #3d4dc9;
+}
+
+.auth-card form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-card > p:last-of-type {
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+  margin: 24px 0 0;
+}
+
+.auth-card > p:last-of-type a {
+  color: #4e5fe1;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-card > p:last-of-type a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 40px;
+}
+
+.page h1 {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #111827;
+  margin: 0 0 16px;
+}
+
+.page .lead {
+  color: #6b7280;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 32px;
+  max-width: 640px;
+}
+
+.page .btn-primary {
+  display: inline-block;
+  padding: 14px 28px;
+  font-size: 16px;
+}
