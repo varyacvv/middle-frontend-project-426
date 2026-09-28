@@ -1,7 +1,9 @@
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
+import fastifyCookie from "@fastify/cookie";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
+import { authRoutes } from "./auth/routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,9 +11,13 @@ const __dirname = dirname(__filename);
 export function buildServer() {
   const server = Fastify({ logger: true });
 
+  server.register(fastifyCookie);
+
   server.get("/api/health", async () => {
     return { status: "ok" };
   });
+
+  server.register(authRoutes);
 
   server.register(fastifyStatic, {
     root: resolve(__dirname, "../../frontend/dist"),
