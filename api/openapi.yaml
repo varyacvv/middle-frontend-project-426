@@ -4,6 +4,72 @@ info:
   version: 0.0.0
 tags: []
 paths:
+  /api/auth/login:
+    post:
+      operationId: login
+      description: Sign in an existing user and start a session
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/User'
+                  - $ref: '#/components/schemas/ApiError'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+  /api/auth/logout:
+    post:
+      operationId: logout
+      description: Sign out the current user and end the session
+      parameters: []
+      responses:
+        '204':
+          description: 'There is no content to send for this request, but the headers may be useful. '
+  /api/auth/me:
+    get:
+      operationId: me
+      description: Get the currently authenticated user
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/User'
+                  - $ref: '#/components/schemas/ApiError'
+  /api/auth/register:
+    post:
+      operationId: register
+      description: Register a new user and start a session
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
   /api/health:
     get:
       operationId: health
@@ -33,6 +99,17 @@ components:
         message:
           type: string
       description: Common API error format shared by all endpoints
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      description: Payload for user sign-in.
     Money:
       type: object
       required:
@@ -42,3 +119,26 @@ components:
           type: integer
           format: int32
       description: Money amount in rubles
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      description: Payload for user registration.
+    User:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: integer
+          format: int32
+        email:
+          type: string
+      description: User account.

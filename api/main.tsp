@@ -15,10 +15,54 @@ model ApiError {
     code: string;
     message: string;
 }
+// Модели пользователя
+@doc("User account.")
+model User {
+    id: int32;
+    email: string;
+}
 
-// Заглушка, чтобы не было пустых paths и components.
+@doc("Payload for user registration.")
+model RegisterRequest {
+    email: string;
+    password: string;
+}
+
+@doc("Payload for user sign-in.")
+model LoginRequest {
+    email: string;
+    password: string;
+}
+// Операции
 @route("/api/health")
 @get
 op health(): {
     status: string;
 };
+
+@route("/api/auth/register")
+@post
+@doc("Register a new user and start a session")
+op register(@body body: RegisterRequest):
+    | {
+          @statusCode statusCode: 201;
+          @body user: User;
+      }
+    | ApiError;
+
+@route("/api/auth/login")
+@post
+@doc("Sign in an existing user and start a session")
+op login(@body body: LoginRequest): User | ApiError;
+
+@route("/api/auth/logout")
+@post
+@doc("Sign out the current user and end the session")
+op logout(): {
+    @statusCode statusCode: 204;
+};
+
+@route("/api/auth/me")
+@get
+@doc("Get the currently authenticated user")
+op me(): User | ApiError;

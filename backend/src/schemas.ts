@@ -38,8 +38,8 @@
  * }} ComponentType
  */
 
-import { Type as T, TypeRegistry, Kind, CloneType } from '@sinclair/typebox'
-import { Value } from '@sinclair/typebox/value'
+import { Type as T, TypeRegistry, Kind, CloneType } from "@sinclair/typebox";
+import { Value } from "@sinclair/typebox/value";
 
 /**
  * @typedef {{
@@ -65,60 +65,128 @@ const Binary = () => {
    * @returns {boolean}
    */
   function BinaryCheck(schema, value) {
-    const type = Object.prototype.toString.call(value)
+    const type = Object.prototype.toString.call(value);
     return (
-      type === '[object Blob]' ||
-      type === '[object File]' ||
-      type === '[object String]' ||
-      type === '[object Uint8Array]'
-    )
+      type === "[object Blob]" ||
+      type === "[object File]" ||
+      type === "[object String]" ||
+      type === "[object Uint8Array]"
+    );
   }
 
-  if (!TypeRegistry.Has('Binary')) TypeRegistry.Set('Binary', BinaryCheck)
+  if (!TypeRegistry.Has("Binary")) TypeRegistry.Set("Binary", BinaryCheck);
 
-  return /** @type {TBinary} */ ({
+  return /** @type {TBinary} */ {
     anyOf: [
       {
-        type: 'object',
-        additionalProperties: true
+        type: "object",
+        additionalProperties: true,
       },
       {
-        type: 'string',
-        format: 'binary'
-      }
+        type: "string",
+        format: "binary",
+      },
     ],
-    [Kind]: 'Binary'
-  })
-}
+    [Kind]: "Binary",
+  };
+};
+
+const ComponentsSchemasUser = T.Object({
+  id: T.Integer({ format: "int32" }),
+  email: T.String(),
+});
+const ComponentsSchemasApiError = T.Object({
+  code: T.String(),
+  message: T.String(),
+});
+const ComponentsSchemasLoginRequest = T.Object({
+  email: T.String(),
+  password: T.String(),
+});
+const ComponentsSchemasRegisterRequest = T.Object({
+  email: T.String(),
+  password: T.String(),
+});
 
 const schema = {
-  '/api/health': {
+  "/api/auth/login": {
+    POST: {
+      args: T.Object({
+        body: CloneType(ComponentsSchemasLoginRequest, {
+          "x-content-type": "application/json",
+        }),
+      }),
+      data: T.Union(
+        [
+          CloneType(ComponentsSchemasUser),
+          CloneType(ComponentsSchemasApiError),
+        ],
+        { "x-status-code": "200", "x-content-type": "application/json" },
+      ),
+      error: T.Union([T.Any({ "x-status-code": "default" })]),
+    },
+  },
+  "/api/auth/logout": {
+    POST: {
+      args: T.Void(),
+      data: T.Any({ "x-status-code": "204" }),
+      error: T.Union([T.Any({ "x-status-code": "default" })]),
+    },
+  },
+  "/api/auth/me": {
+    GET: {
+      args: T.Void(),
+      data: T.Union(
+        [
+          CloneType(ComponentsSchemasUser),
+          CloneType(ComponentsSchemasApiError),
+        ],
+        { "x-status-code": "200", "x-content-type": "application/json" },
+      ),
+      error: T.Union([T.Any({ "x-status-code": "default" })]),
+    },
+  },
+  "/api/auth/register": {
+    POST: {
+      args: T.Object({
+        body: CloneType(ComponentsSchemasRegisterRequest, {
+          "x-content-type": "application/json",
+        }),
+      }),
+      data: CloneType(ComponentsSchemasApiError, {
+        "x-status-code": "200",
+        "x-content-type": "application/json",
+      }),
+      error: T.Union([T.Any({ "x-status-code": "default" })]),
+    },
+  },
+  "/api/health": {
     GET: {
       args: T.Void(),
       data: T.Object(
         {
-          status: T.String()
+          status: T.String(),
         },
         {
-          'x-status-code': '200',
-          'x-content-type': 'application/json'
-        }
+          "x-status-code": "200",
+          "x-content-type": "application/json",
+        },
       ),
-      error: T.Union([T.Any({ 'x-status-code': 'default' })])
-    }
-  }
-}
+      error: T.Union([T.Any({ "x-status-code": "default" })]),
+    },
+  },
+};
 
 const _components = {
   schemas: {
-    ApiError: T.Object({
-      code: T.String(),
-      message: T.String()
-    }),
+    ApiError: CloneType(ComponentsSchemasApiError),
+    LoginRequest: CloneType(ComponentsSchemasLoginRequest),
     Money: T.Object({
-      amount: T.Integer({ format: 'int32' })
-    })
-  }
-}
+      amount: T.Integer({ format: "int32" }),
+    }),
+    RegisterRequest: CloneType(ComponentsSchemasRegisterRequest),
+    User: CloneType(ComponentsSchemasUser),
+  },
+};
 
-export { schema, _components as components }
+export { schema, _components as components };
