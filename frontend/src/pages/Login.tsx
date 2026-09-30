@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
-import { ApiError } from '../api/auth'
+import { errorMessage } from '../api/auth'
 
 export function Login() {
     const { login } = useAuth()
@@ -18,11 +18,7 @@ export function Login() {
             await login(email, password)
             navigate('/')
         } catch (err) {
-            if (err instanceof ApiError) {
-                setError(err.message)
-            } else {
-                setError('Что-то пошло не так')
-            }
+            setError(errorMessage(err))
         }
         setSubmitting(false)
     }

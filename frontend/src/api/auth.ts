@@ -63,9 +63,26 @@ export function login(email: string, password: string): Promise<User> {
 }
 
 export function logout(): Promise<void> {
-  return request<void>("/api/auth/logout", { method: "POST" });
+  return request<void>("/api/auth/logout", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
 }
 
 export function me(): Promise<User> {
   return request<User>("/api/auth/me");
+}
+
+const MESSAGES: Record<string, string> = {
+  invalid_credentials: "Неверный email или пароль",
+  email_taken: "Этот email уже зарегистрирован",
+  validation_error: "Неверные данные для входа",
+  unauthorized: "Требуется авторизация",
+};
+
+export function errorMessage(err: unknown): string {
+  if (err instanceof ApiError) {
+    return MESSAGES[err.code] ?? err.message;
+  }
+  return "Что-то пошло не так";
 }
