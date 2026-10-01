@@ -72,6 +72,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List all categories. */
+        get: operations["listCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/health": {
         parameters: {
             query?: never;
@@ -80,6 +97,23 @@ export interface paths {
             cookie?: never;
         };
         get: operations["health"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List products with filters and pagination. */
+        get: operations["listProducts"];
         put?: never;
         post?: never;
         delete?: never;
@@ -97,6 +131,13 @@ export interface components {
             code: string;
             message: string;
         };
+        /** @description Product category. */
+        Category: {
+            /** Format: int32 */
+            id: number;
+            slug: string;
+            name: string;
+        };
         /** @description Payload for user sign-in. */
         LoginRequest: {
             email: string;
@@ -106,6 +147,28 @@ export interface components {
         Money: {
             /** Format: int32 */
             amount: number;
+        };
+        /** @description Product in the catalog. */
+        Product: {
+            /** Format: int32 */
+            id: number;
+            slug: string;
+            name: string;
+            description: string;
+            price: components["schemas"]["Money"];
+            inStock: boolean;
+            imageUrl: string | null;
+            category: components["schemas"]["Category"];
+        };
+        /** @description Paginated list of products. */
+        ProductList: {
+            items: components["schemas"]["Product"][];
+            /** Format: int32 */
+            total: number;
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
         };
         /** @description Payload for user registration. */
         RegisterRequest: {
@@ -120,7 +183,20 @@ export interface components {
         };
     };
     responses: never;
-    parameters: never;
+    parameters: {
+        /** @description Only products in stock. */
+        "ProductListParams.available": boolean;
+        /** @description Category slug. Empty means all categories. */
+        "ProductListParams.category": string;
+        /** @description Page number, 1-based. */
+        "ProductListParams.page": number;
+        /** @description Maximum price in whole rubles. */
+        "ProductListParams.priceMax": number;
+        /** @description Minimum price in whole rubles. */
+        "ProductListParams.priceMin": number;
+        /** @description Search by product name. */
+        "ProductListParams.search": string;
+    };
     requestBodies: never;
     headers: never;
     pathItems: never;
@@ -222,6 +298,26 @@ export interface operations {
             };
         };
     };
+    listCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Category"][];
+                };
+            };
+        };
+    };
     health: {
         parameters: {
             query?: never;
@@ -240,6 +336,39 @@ export interface operations {
                     "application/json": {
                         status: string;
                     };
+                };
+            };
+        };
+    };
+    listProducts: {
+        parameters: {
+            query?: {
+                /** @description Category slug. Empty means all categories. */
+                category?: components["parameters"]["ProductListParams.category"];
+                /** @description Minimum price in whole rubles. */
+                priceMin?: components["parameters"]["ProductListParams.priceMin"];
+                /** @description Maximum price in whole rubles. */
+                priceMax?: components["parameters"]["ProductListParams.priceMax"];
+                /** @description Only products in stock. */
+                available?: components["parameters"]["ProductListParams.available"];
+                /** @description Search by product name. */
+                search?: components["parameters"]["ProductListParams.search"];
+                /** @description Page number, 1-based. */
+                page?: components["parameters"]["ProductListParams.page"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductList"] | components["schemas"]["ApiError"];
                 };
             };
         };

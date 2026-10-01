@@ -70,6 +70,20 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterRequest'
+  /api/categories:
+    get:
+      operationId: listCategories
+      description: List all categories.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
   /api/health:
     get:
       operationId: health
@@ -86,7 +100,79 @@ paths:
                     type: string
                 required:
                   - status
+  /api/products:
+    get:
+      operationId: listProducts
+      description: List products with filters and pagination.
+      parameters:
+        - $ref: '#/components/parameters/ProductListParams.category'
+        - $ref: '#/components/parameters/ProductListParams.priceMin'
+        - $ref: '#/components/parameters/ProductListParams.priceMax'
+        - $ref: '#/components/parameters/ProductListParams.available'
+        - $ref: '#/components/parameters/ProductListParams.search'
+        - $ref: '#/components/parameters/ProductListParams.page'
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/ProductList'
+                  - $ref: '#/components/schemas/ApiError'
 components:
+  parameters:
+    ProductListParams.available:
+      name: available
+      in: query
+      required: false
+      description: Only products in stock.
+      schema:
+        type: boolean
+      explode: false
+    ProductListParams.category:
+      name: category
+      in: query
+      required: false
+      description: Category slug. Empty means all categories.
+      schema:
+        type: string
+      explode: false
+    ProductListParams.page:
+      name: page
+      in: query
+      required: false
+      description: Page number, 1-based.
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    ProductListParams.priceMax:
+      name: priceMax
+      in: query
+      required: false
+      description: Maximum price in whole rubles.
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    ProductListParams.priceMin:
+      name: priceMin
+      in: query
+      required: false
+      description: Minimum price in whole rubles.
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    ProductListParams.search:
+      name: search
+      in: query
+      required: false
+      description: Search by product name.
+      schema:
+        type: string
+      explode: false
   schemas:
     ApiError:
       type: object
@@ -99,6 +185,21 @@ components:
         message:
           type: string
       description: Common API error format shared by all endpoints
+    Category:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+        name:
+          type: string
+      description: Product category.
     LoginRequest:
       type: object
       required:
@@ -119,6 +220,59 @@ components:
           type: integer
           format: int32
       description: Money amount in rubles
+    Product:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - description
+        - price
+        - inStock
+        - imageUrl
+        - category
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          $ref: '#/components/schemas/Money'
+        inStock:
+          type: boolean
+        imageUrl:
+          type: string
+          nullable: true
+        category:
+          $ref: '#/components/schemas/Category'
+      description: Product in the catalog.
+    ProductList:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - pageSize
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        total:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+      description: Paginated list of products.
     RegisterRequest:
       type: object
       required:
