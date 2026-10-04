@@ -1,25 +1,42 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { fetchCategories, fetchProducts } from '../api/catalog'
 import type { Category, Product, ProductFilters } from '../api/catalog'
 import { Filters } from '../components/Filters'
 import { ProductCard } from '../components/ProductCard'
 import { Pagination } from '../components/Pagination'
 
-const EMPTY_FILTERS: ProductFilters = {
-    category: '',
-    priceMin: '',
-    priceMax: '',
-    available: false,
-    search: '',
-    page: 1,
+function readFilters(params: URLSearchParams): ProductFilters {
+    const page = Number(params.get('page'))
+    return {
+        category: params.get('category') ?? '',
+        priceMin: params.get('priceMin') ?? '',
+        priceMax: params.get('priceMax') ?? '',
+        available: params.get('available') === 'true',
+        search: params.get('search') ?? '',
+        page: Number.isInteger(page) && page > 0 ? page : 1,
+    }
+}
+
+function writeFilters(filters: ProductFilters): URLSearchParams {
+    const params = new URLSearchParams()
+    if (filters.category) params.set('category', filters.category)
+    if (filters.priceMin) params.set('priceMin', filters.priceMin)
+    if (filters.priceMax) params.set('priceMax', filters.priceMax)
+    if (filters.available) params.set('available', 'true')
+    if (filters.search) params.set('search', filters.search)
+    if (filters.page > 1) params.set('page', String(filters.page))
+    return params
 }
 
 export function Catalog() {
+    const [searchParams, setSearchParams] = useSearchParams()
+    const filters = readFilters(searchParams)
+
     const [categories, setCategories] = useState<Category[]>([])
     const [products, setProducts] = useState<Product[]>([])
     const [total, setTotal] = useState(0)
     const [pageSize, setPageSize] = useState(12)
-    const [filters, setFilters] = useState<ProductFilters>(EMPTY_FILTERS)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -38,14 +55,16 @@ export function Catalog() {
                 setTotal(0)
             })
             .finally(() => setLoading(false))
-    }, [filters])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams])
 
     function updateFilters(next: Partial<ProductFilters>) {
-        setFilters((prev) => ({ ...prev, ...next }))
+        const updated = { ...filters, ...next }
+        setSearchParams(writeFilters(updated))
     }
 
     function resetFilters() {
-        setFilters(EMPTY_FILTERS)
+        setSearchParams(new URLSearchParams())
     }
 
     return (
@@ -64,9 +83,7 @@ export function Catalog() {
                 {!loading && products.length === 0 ? (
                     <div className="catalog-empty">
                         <h2>Ничего не найдено</h2>
-                        <p>
-                            Измените параметры поиска или сбросьте фильтры.
-                        </p>
+                        <p>Измените параметры поиска или сбросьте фильтры</p>
                         <button type="button" className="btn-primary" onClick={resetFilters}>
                             Показать все товары
                         </button>
