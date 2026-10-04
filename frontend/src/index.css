@@ -234,3 +234,293 @@ body {
   padding: 14px 28px;
   font-size: 16px;
 }
+
+.catalog {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 40px;
+}
+
+.catalog-main {
+  flex: 1;
+}
+
+.catalog-main h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.catalog-count {
+  color: #888;
+  margin: 0 0 20px;
+}
+
+.filters {
+  width: 240px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.filters h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+.filters label {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.filters input,
+.filters select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.filter-checkbox {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+}
+
+.filter-checkbox input {
+  width: auto;
+  margin: 0;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.product-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-image {
+  background: #f0f4ff;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.product-image img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.product-image-placeholder {
+  text-align: center;
+  color: #4e5fe1;
+}
+
+.product-image-placeholder span {
+  display: block;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.product-image-placeholder small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #888;
+}
+
+.product-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #111;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.product-name:hover {
+  color: #4e5fe1;
+}
+
+.product-description {
+  color: #777;
+  font-size: 13px;
+  margin: 8px 0 12px;
+  flex: 1;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-price {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.badge-in-stock {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-out-of-stock {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.pagination {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.pagination button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination .page-active {
+  background: #4e5fe1;
+  color: #fff;
+  border-color: #4e5fe1;
+}
+
+@media (max-width: 900px) {
+  .catalog {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding: 12px 15px;
+    gap: 12px;
+  }
+
+  .header-nav {
+    gap: 14px;
+  }
+
+  .logo {
+    font-size: 14px;
+  }
+
+  .logo-mark {
+    width: 8px;
+    height: 8px;
+  }
+
+  .header-nav a,
+  .btn-primary,
+  .btn-light {
+    font-size: 13px;
+  }
+
+  .btn-primary,
+  .btn-light {
+    padding: 7px 12px;
+  }
+
+  .catalog {
+    padding: 15px;
+  }
+
+  .catalog-main h1 {
+    font-size: 22px;
+  }
+
+  .filters {
+    padding: 15px;
+  }
+
+  .filters h2 {
+    font-size: 16px;
+  }
+
+  .filters label {
+    font-size: 13px;
+  }
+
+  .filters input,
+  .filters select {
+    padding: 7px;
+    font-size: 13px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .product-image {
+    height: 140px;
+  }
+
+  .pagination button {
+    min-width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 18px 15px;
+  }
+}
