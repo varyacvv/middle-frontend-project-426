@@ -62,12 +62,13 @@ body {
 
 .btn-primary {
   background: #4e5fe1;
-  color: #fff !important;
-  padding: 10px 20px;
-  border-radius: 8px;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
   font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
+  font-family: inherit;
 }
 
 .btn-primary:hover {
@@ -523,4 +524,26 @@ body {
     text-align: center;
     padding: 18px 15px;
   }
+}
+.catalog-empty {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+}
+
+.catalog-empty h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.catalog-empty p {
+  color: #777;
+  margin: 0 0 20px;
+  font-size: 14px;
+}
+
+.catalog-empty button {
+  cursor: pointer;
 }

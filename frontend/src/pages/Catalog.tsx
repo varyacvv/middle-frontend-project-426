@@ -61,11 +61,23 @@ export function Catalog() {
                 <p className="catalog-count">
                     {loading ? 'Загрузка...' : `Найдено товаров: ${total}`}
                 </p>
-                <div className="product-grid">
-                    {products.map((p) => (
-                        <ProductCard key={p.id} product={p} />
-                    ))}
-                </div>
+                {!loading && products.length === 0 ? (
+                    <div className="catalog-empty">
+                        <h2>Ничего не найдено</h2>
+                        <p>
+                            Измените параметры поиска или сбросьте фильтры.
+                        </p>
+                        <button type="button" className="btn-primary" onClick={resetFilters}>
+                            Показать все товары
+                        </button>
+                    </div>
+                ) : (
+                    <div className="product-grid">
+                        {products.map((p) => (
+                            <ProductCard key={p.id} product={p} />
+                        ))}
+                    </div>
+                )}
                 <Pagination
                     page={filters.page}
                     pageSize={pageSize}
