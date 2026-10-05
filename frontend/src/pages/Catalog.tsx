@@ -44,17 +44,22 @@ export function Catalog() {
     }, [])
 
     useEffect(() => {
-        fetchProducts(filters)
+        const controller = new AbortController()
+
+        fetchProducts(filters, controller.signal)
             .then((data) => {
                 setProducts(data.items)
                 setTotal(data.total)
                 setPageSize(data.pageSize)
             })
-            .catch(() => {
+            .catch((err) => {
+                if (err instanceof DOMException && err.name === 'AbortError') return
                 setProducts([])
                 setTotal(0)
             })
             .finally(() => setLoading(false))
+
+        return () => controller.abort()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchParams])
 
@@ -81,7 +86,7 @@ export function Catalog() {
                     {loading ? 'Загрузка...' : `Найдено товаров: ${total}`}
                 </p>
                 {!loading && products.length === 0 ? (
-                    <div className="catalog-empty">
+                    <div className="catalog-empty" data-testid="catalog-empty">
                         <h2>Ничего не найдено</h2>
                         <p>Измените параметры поиска или сбросьте фильтры</p>
                         <button type="button" className="btn-primary" onClick={resetFilters}>
@@ -89,7 +94,7 @@ export function Catalog() {
                         </button>
                     </div>
                 ) : (
-                    <div className="product-grid">
+                    <div className="product-grid" data-testid="catalog-list">
                         {products.map((p) => (
                             <ProductCard key={p.id} product={p} />
                         ))}

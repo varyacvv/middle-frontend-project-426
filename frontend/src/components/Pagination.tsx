@@ -13,11 +13,12 @@ export function Pagination({ page, pageSize, total, onChange }: Props) {
     for (let i = 1; i <= totalPages; i++) pages.push(i)
 
     return (
-        <div className="pagination">
+        <div className="pagination" data-testid="catalog-pagination">
             <button
                 type="button"
                 disabled={page <= 1}
                 onClick={() => onChange(page - 1)}
+                data-testid="catalog-page-prev"
             >
                 ‹
             </button>
@@ -35,6 +36,7 @@ export function Pagination({ page, pageSize, total, onChange }: Props) {
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => onChange(page + 1)}
+                data-testid="catalog-page-next"
             >
                 ›
             </button>

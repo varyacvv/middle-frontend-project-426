@@ -39,6 +39,7 @@ export async function fetchCategories(): Promise<Category[]> {
 
 export async function fetchProducts(
   filters: ProductFilters,
+  signal?: AbortSignal,
 ): Promise<ProductList> {
   const params = new URLSearchParams();
 
@@ -52,7 +53,7 @@ export async function fetchProducts(
   const query = params.toString();
   const url = query ? `/api/products?${query}` : "/api/products";
 
-  const res = await fetch(url);
+  const res = await fetch(url, { signal });
   if (!res.ok) throw new Error("Failed to load products");
   return res.json();
 }

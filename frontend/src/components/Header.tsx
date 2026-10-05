@@ -17,7 +17,9 @@ export function Header() {
                 Комплектующие
             </Link>
             <nav className="header-nav">
-                <Link to="/catalog">Каталог</Link>
+                <Link to="/catalog" data-testid="nav-catalog">
+                    Каталог
+                </Link>
                 {user ? (
                     <>
                         <Link to="/account" data-testid="nav-account">
