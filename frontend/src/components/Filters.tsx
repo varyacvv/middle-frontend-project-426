@@ -10,13 +10,41 @@ interface Props {
 
 export function Filters({ categories, filters, onChange, onReset }: Props) {
     const [search, setSearch] = useState(filters.search)
-    const [prevSearch, setPrevSearch] = useState(filters.search)
-    const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+    const [category, setCategory] = useState(filters.category)
+    const [priceMin, setPriceMin] = useState(filters.priceMin)
+    const [priceMax, setPriceMax] = useState(filters.priceMax)
+    const [available, setAvailable] = useState(filters.available)
 
-    if (filters.search !== prevSearch) {
-        setPrevSearch(filters.search)
+    const [prev, setPrev] = useState({
+        search: filters.search,
+        category: filters.category,
+        priceMin: filters.priceMin,
+        priceMax: filters.priceMax,
+        available: filters.available,
+    })
+
+    if (
+        filters.search !== prev.search ||
+        filters.category !== prev.category ||
+        filters.priceMin !== prev.priceMin ||
+        filters.priceMax !== prev.priceMax ||
+        filters.available !== prev.available
+    ) {
+        setPrev({
+            search: filters.search,
+            category: filters.category,
+            priceMin: filters.priceMin,
+            priceMax: filters.priceMax,
+            available: filters.available,
+        })
         setSearch(filters.search)
+        setCategory(filters.category)
+        setPriceMin(filters.priceMin)
+        setPriceMax(filters.priceMax)
+        setAvailable(filters.available)
     }
+
+    const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
     function handleSearchChange(value: string) {
         setSearch(value)
@@ -26,6 +54,26 @@ export function Filters({ categories, filters, onChange, onReset }: Props) {
         }, 400)
     }
 
+    function handleCategoryChange(value: string) {
+        setCategory(value)
+        onChange({ category: value, page: 1 })
+    }
+
+    function handlePriceMinChange(value: string) {
+        setPriceMin(value)
+        onChange({ priceMin: value, page: 1 })
+    }
+
+    function handlePriceMaxChange(value: string) {
+        setPriceMax(value)
+        onChange({ priceMax: value, page: 1 })
+    }
+
+    function handleAvailableChange(checked: boolean) {
+        setAvailable(checked)
+        onChange({ available: checked, page: 1 })
+    }
+
     return (
         <aside className="filters" data-testid="catalog-filters">
             <h2>Фильтры</h2>
@@ -33,8 +81,8 @@ export function Filters({ categories, filters, onChange, onReset }: Props) {
             <label>
                 Категория
                 <select
-                    value={filters.category}
-                    onChange={(e) => onChange({ category: e.target.value, page: 1 })}
+                    value={category}
+                    onChange={(e) => handleCategoryChange(e.target.value)}
                     data-testid="filter-category"
                 >
                     <option value="">Все категории</option>
@@ -62,8 +110,8 @@ export function Filters({ categories, filters, onChange, onReset }: Props) {
                 <input
                     type="number"
                     placeholder="0"
-                    value={filters.priceMin}
-                    onChange={(e) => onChange({ priceMin: e.target.value, page: 1 })}
+                    value={priceMin}
+                    onChange={(e) => handlePriceMinChange(e.target.value)}
                     data-testid="filter-price-min"
                 />
             </label>
@@ -73,8 +121,8 @@ export function Filters({ categories, filters, onChange, onReset }: Props) {
                 <input
                     type="number"
                     placeholder="200 000"
-                    value={filters.priceMax}
-                    onChange={(e) => onChange({ priceMax: e.target.value, page: 1 })}
+                    value={priceMax}
+                    onChange={(e) => handlePriceMaxChange(e.target.value)}
                     data-testid="filter-price-max"
                 />
             </label>
@@ -82,8 +130,8 @@ export function Filters({ categories, filters, onChange, onReset }: Props) {
             <label className="filter-checkbox">
                 <input
                     type="checkbox"
-                    checked={filters.available}
-                    onChange={(e) => onChange({ available: e.target.checked, page: 1 })}
+                    checked={available}
+                    onChange={(e) => handleAvailableChange(e.target.checked)}
                     data-testid="filter-available"
                 />
                 Только в наличии
