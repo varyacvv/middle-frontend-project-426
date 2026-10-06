@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { authRoutes } from "./auth/routes.js";
 import { catalogRoutes } from "./catalog/routes.js";
+import { promosRoutes } from "./promos/routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,6 +21,7 @@ export function buildServer() {
 
   server.register(authRoutes);
   server.register(catalogRoutes);
+  server.register(promosRoutes);
 
   server.register(fastifyStatic, {
     root: resolve(__dirname, "../../frontend/dist"),
