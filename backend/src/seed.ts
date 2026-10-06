@@ -14,6 +14,12 @@ interface ProductSeed {
   in_stock: boolean;
 }
 
+interface PromoSeed {
+  title: string;
+  text: string;
+  productSlug: string;
+}
+
 const categories: CategorySeed[] = [
   { slug: "videocards", name: "Видеокарты" },
   { slug: "processors", name: "Процессоры" },
@@ -24,7 +30,7 @@ const categories: CategorySeed[] = [
 ];
 
 const products: ProductSeed[] = [
-  // Видеокарты 
+  // Видеокарты
   {
     slug: "nvidia-geforce-rtx-4070",
     name: "NVIDIA GeForce RTX 4070",
@@ -519,6 +525,24 @@ const products: ProductSeed[] = [
   },
 ];
 
+const promos: PromoSeed[] = [
+  {
+    title: "Игровая сборка на RTX 4070",
+    text: "12 ГБ GDDR6X и DLSS 3 — комфортный 1440p без переплаты за флагман.",
+    productSlug: "nvidia-geforce-rtx-4070",
+  },
+  {
+    title: "Процессор для игр",
+    text: "3D V-Cache даёт прирост в играх там, где частота уже не помогает.",
+    productSlug: "amd-ryzen-7-7800x3d",
+  },
+  {
+    title: "Плата с запасом на будущее",
+    text: "DDR5, два слота M.2 и питание с запасом под разгон процессора.",
+    productSlug: "msi-mag-b760-tomahawk",
+  },
+];
+
 export async function seedCatalog(): Promise<void> {
   // Категории
   for (const c of categories) {
@@ -547,8 +571,27 @@ export async function seedCatalog(): Promise<void> {
       [p.slug, p.name, p.description, categoryId, p.price, p.in_stock],
     );
   }
+  // Промо-блоки
+  const productResult = await pool.query<{ id: number; slug: string }>(
+    "SELECT id, slug FROM products",
+  );
+  const productIdBySlug = new Map(
+    productResult.rows.map((r) => [r.slug, r.id]),
+  );
 
+  for (const p of promos) {
+    const productId = productIdBySlug.get(p.productSlug);
+    if (!productId) {
+      throw new Error(`Product not found for slug: ${p.productSlug}`);
+    }
+    await pool.query(
+      `INSERT INTO promos (title, text, product_id)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (product_id) DO NOTHING`,
+      [p.title, p.text, productId],
+    );
+  }
   console.log(
-    `Seed: ensured ${categories.length} categories and ${products.length} products`,
+    `Seed: ensured ${categories.length} categories, ${products.length} products and ${promos.length} promos`,
   );
 }
