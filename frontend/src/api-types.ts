@@ -122,6 +122,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/promos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List promo blocks for the home page. */
+        get: operations["listPromos"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -169,6 +186,14 @@ export interface components {
             page: number;
             /** Format: int32 */
             pageSize: number;
+        };
+        /** @description Promo block shown on the home page. Links to a single product. */
+        PromoBlock: {
+            /** Format: int32 */
+            id: number;
+            title: string;
+            text: string;
+            product: components["schemas"]["Product"];
         };
         /** @description Payload for user registration. */
         RegisterRequest: {
@@ -369,6 +394,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProductList"] | components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listPromos: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromoBlock"][];
                 };
             };
         };

@@ -70,50 +70,56 @@ op me(): User | ApiError;
 // Модели каталога
 @doc("Product category.")
 model Category {
-  id: int32;
-  slug: string;
-  name: string;
+    id: int32;
+    slug: string;
+    name: string;
 }
 
 @doc("Product in the catalog.")
 model Product {
-  id: int32;
-  slug: string;
-  name: string;
-  description: string;
-  price: Money;
-  inStock: boolean;
-  imageUrl: string | null;
-  category: Category;
+    id: int32;
+    slug: string;
+    name: string;
+    description: string;
+    price: Money;
+    inStock: boolean;
+    imageUrl: string | null;
+    category: Category;
 }
 
 @doc("Filters and pagination for the product list.")
 model ProductListParams {
-  @doc("Category slug. Empty means all categories.")
-  @query category?: string;
+    @doc("Category slug. Empty means all categories.")
+    @query
+    category?: string;
 
-  @doc("Minimum price in whole rubles.")
-  @query priceMin?: int32;
+    @doc("Minimum price in whole rubles.")
+    @query
+    priceMin?: int32;
 
-  @doc("Maximum price in whole rubles.")
-  @query priceMax?: int32;
+    @doc("Maximum price in whole rubles.")
+    @query
+    priceMax?: int32;
 
-  @doc("Only products in stock.")
-  @query available?: boolean;
+    @doc("Only products in stock.")
+    @query
+    available?: boolean;
 
-  @doc("Search by product name.")
-  @query search?: string;
+    @doc("Search by product name.")
+    @query
+    search?: string;
 
-  @doc("Page number, 1-based.")
-  @query page?: int32;
+    @doc("Page number, 1-based.")
+    @query
+    page?: int32;
 }
 
 @doc("Paginated list of products.")
 model ProductList {
-  items: Product[];
-  total: int32;
-  page: int32;
-  pageSize: int32;
+    items: Product[];
+    total: int32;
+    page: int32;
+    pageSize: int32;
 }
 
 // Операции каталога
@@ -127,3 +133,19 @@ op listCategories(): Category[];
 @get
 @doc("List products with filters and pagination.")
 op listProducts(...ProductListParams): ProductList | ApiError;
+
+// Модели промо-блоков
+@doc("Promo block shown on the home page. Links to a single product.")
+model PromoBlock {
+    id: int32;
+    title: string;
+    text: string;
+    product: Product;
+}
+
+// Операции промо-блоков
+
+@route("/api/promos")
+@get
+@doc("List promo blocks for the home page.")
+op listPromos(): PromoBlock[];
