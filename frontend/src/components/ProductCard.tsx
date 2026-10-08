@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { Product } from '../api/catalog'
+import { ProductImage } from './ProductImage'
 
 function formatPrice(amount: number): string {
     return amount.toLocaleString('ru-RU') + ' ₽'
@@ -8,16 +9,7 @@ function formatPrice(amount: number): string {
 export function ProductCard({ product }: { product: Product }) {
     return (
         <div className="product-card" data-testid="catalog-item">
-            <div className="product-image">
-                {product.imageUrl ? (
-                    <img src={product.imageUrl} alt={product.name} />
-                ) : (
-                    <div className="product-image-placeholder">
-                        <span>{product.name}</span>
-                        <small>{product.category.name}</small>
-                    </div>
-                )}
-            </div>
+            <ProductImage product={product} />
             <div className="product-body">
                 <Link
                     to={`/product/${product.slug}`}
