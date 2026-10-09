@@ -134,6 +134,11 @@ op listCategories(): Category[];
 @doc("List products with filters and pagination.")
 op listProducts(...ProductListParams): ProductList | ApiError;
 
+@route("/api/products/{slug}")
+@get
+@doc("Get a single product by slug.")
+op getProduct(@path slug: string): Product | ApiError;
+
 // Модели промо-блоков
 @doc("Promo block shown on the home page. Links to a single product.")
 model PromoBlock {

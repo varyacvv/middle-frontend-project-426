@@ -120,6 +120,25 @@ paths:
                 anyOf:
                   - $ref: '#/components/schemas/ProductList'
                   - $ref: '#/components/schemas/ApiError'
+  /api/products/{slug}:
+    get:
+      operationId: getProduct
+      description: Get a single product by slug.
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Product'
+                  - $ref: '#/components/schemas/ApiError'
   /api/promos:
     get:
       operationId: listPromos

@@ -251,6 +251,23 @@ const schema = {
       error: T.Union([T.Any({ "x-status-code": "default" })]),
     },
   },
+  "/api/products/{slug}": {
+    GET: {
+      args: T.Object({
+        params: T.Object({
+          slug: T.String({ "x-in": "path" }),
+        }),
+      }),
+      data: T.Union(
+        [
+          CloneType(ComponentsSchemasProduct),
+          CloneType(ComponentsSchemasApiError),
+        ],
+        { "x-status-code": "200", "x-content-type": "application/json" },
+      ),
+      error: T.Union([T.Any({ "x-status-code": "default" })]),
+    },
+  },
   "/api/promos": {
     GET: {
       args: T.Void(),

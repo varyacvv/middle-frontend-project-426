@@ -122,6 +122,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/products/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single product by slug. */
+        get: operations["getProduct"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/promos": {
         parameters: {
             query?: never;
@@ -394,6 +411,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProductList"] | components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"] | components["schemas"]["ApiError"];
                 };
             };
         };
