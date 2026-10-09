@@ -57,3 +57,9 @@ export async function fetchProducts(
   if (!res.ok) throw new Error("Failed to load products");
   return res.json();
 }
+
+export async function fetchProduct(slug: string): Promise<Product> {
+  const res = await fetch(`/api/products/${slug}`);
+  if (!res.ok) throw new Error("Failed to load product");
+  return res.json();
+}
