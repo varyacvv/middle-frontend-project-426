@@ -1,8 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { useCart } from '../context/useCart'
 
 export function Header() {
     const { user, logout } = useAuth()
+    const { totalCount } = useCart()
     const navigate = useNavigate()
 
     async function handleLogout() {
@@ -19,6 +21,10 @@ export function Header() {
             <nav className="header-nav">
                 <Link to="/catalog" data-testid="nav-catalog">
                     Каталог
+                </Link>
+                <Link to="/cart" className="nav-cart" data-testid="nav-cart">
+                    Корзина
+                    {totalCount > 0 && <span className="nav-cart-count">{totalCount}</span>}
                 </Link>
                 {user ? (
                     <>
