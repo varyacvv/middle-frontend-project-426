@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { RequireAuth } from './components/RequireAuth'
@@ -13,22 +14,24 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/account"
-            element={
-              <RequireAuth>
-                <Account />
-              </RequireAuth>
-            }
-          />
-        </Routes>
-        <Footer />
+        <CartProvider>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/account"
+              element={
+                <RequireAuth>
+                  <Account />
+                </RequireAuth>
+              }
+            />
+          </Routes>
+          <Footer />
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   )
