@@ -25,6 +25,23 @@ interface ListProductsQuery {
   page?: string;
 }
 
+function mapProduct(row: ProductRow) {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    description: row.description,
+    price: { amount: row.price },
+    inStock: row.in_stock,
+    imageUrl: row.image_url,
+    category: {
+      id: row.category_id,
+      slug: row.category_slug,
+      name: row.category_name,
+    },
+  };
+}
+
 export async function catalogRoutes(server: FastifyInstance) {
   server.get("/api/categories", async () => {
     const result = await pool.query(
@@ -91,21 +108,31 @@ export async function catalogRoutes(server: FastifyInstance) {
       [...params, PAGE_SIZE, offset],
     );
 
-    const items = itemsResult.rows.map((row) => ({
-      id: row.id,
-      slug: row.slug,
-      name: row.name,
-      description: row.description,
-      price: { amount: row.price },
-      inStock: row.in_stock,
-      imageUrl: row.image_url,
-      category: {
-        id: row.category_id,
-        slug: row.category_slug,
-        name: row.category_name,
-      },
-    }));
+    const items = itemsResult.rows.map(mapProduct);
 
     return { items, total, page, pageSize: PAGE_SIZE };
+  });
+
+  server.get("/api/products/:slug", async (request, reply) => {
+    const { slug } = request.params as { slug: string };
+
+    const result = await pool.query<ProductRow>(
+      `SELECT
+         p.id, p.slug, p.name, p.description, p.price, p.in_stock, p.image_url,
+         c.id AS category_id, c.slug AS category_slug, c.name AS category_name
+       FROM products p
+       JOIN categories c ON c.id = p.category_id
+       WHERE p.slug = $1`,
+      [slug],
+    );
+
+    if (result.rows.length === 0) {
+      return reply.code(404).send({
+        code: "not_found",
+        message: "Product not found",
+      });
+    }
+
+    return mapProduct(result.rows[0]);
   });
 }
