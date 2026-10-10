@@ -105,6 +105,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List orders of the current user. */
+        get: operations["listOrders"];
+        put?: never;
+        /** @description Create a new order from the current cart. */
+        post: operations["createOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single order by id. */
+        get: operations["getOrder"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/products": {
         parameters: {
             query?: never;
@@ -172,6 +207,20 @@ export interface components {
             slug: string;
             name: string;
         };
+        /** @description Payload for order creation. Contains no prices. */
+        CreateOrderRequest: {
+            /** @enum {string} */
+            method: "delivery" | "pickup";
+            name: string;
+            phone: string;
+            address?: string;
+            items: components["schemas"]["OrderItemInput"][];
+        };
+        /**
+         * @description Delivery or pickup.
+         * @enum {string}
+         */
+        DeliveryMethod: "delivery" | "pickup";
         /** @description Payload for user sign-in. */
         LoginRequest: {
             email: string;
@@ -182,6 +231,48 @@ export interface components {
             /** Format: int32 */
             amount: number;
         };
+        /** @description A completed order. */
+        Order: {
+            /** Format: int32 */
+            id: number;
+            status: string;
+            createdAt: string;
+            method: string;
+            name: string;
+            phone: string;
+            address: string | null;
+            total: components["schemas"]["Money"];
+            items: components["schemas"]["OrderItem"][];
+        };
+        /** @description Order was rejected because some products are unavailable. */
+        OrderError: {
+            unavailable: components["schemas"]["OrderErrorItem"][];
+        } & components["schemas"]["ApiError"];
+        /** @description Problematic item that blocked an order. */
+        OrderErrorItem: {
+            slug: string;
+            reason: string;
+        };
+        /** @description Snapshot of a product inside an order. */
+        OrderItem: {
+            /** Format: int32 */
+            productId: number;
+            name: string;
+            price: components["schemas"]["Money"];
+            /** Format: int32 */
+            quantity: number;
+        };
+        /** @description Single item of a create order request. */
+        OrderItemInput: {
+            slug: string;
+            /** Format: int32 */
+            quantity: number;
+        };
+        /**
+         * @description Order status.
+         * @enum {string}
+         */
+        OrderStatus: "paid";
         /** @description Product in the catalog. */
         Product: {
             /** Format: int32 */
@@ -378,6 +469,81 @@ export interface operations {
                     "application/json": {
                         status: string;
                     };
+                };
+            };
+        };
+    };
+    listOrders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"][];
+                };
+            };
+        };
+    };
+    createOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderError"];
+                };
+            };
+            /** @description The request has succeeded and a new resource has been created as a result. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
+                };
+            };
+        };
+    };
+    getOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"] | components["schemas"]["ApiError"];
                 };
             };
         };

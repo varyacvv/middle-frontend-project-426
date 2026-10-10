@@ -154,3 +154,85 @@ model PromoBlock {
 @get
 @doc("List promo blocks for the home page.")
 op listPromos(): PromoBlock[];
+
+// Модели заказов
+
+@doc("Order status.")
+enum OrderStatus {
+    paid: "paid",
+}
+
+@doc("Delivery or pickup.")
+enum DeliveryMethod {
+    delivery: "delivery",
+    pickup: "pickup",
+}
+
+@doc("Snapshot of a product inside an order.")
+model OrderItem {
+    productId: int32;
+    name: string;
+    price: Money;
+    quantity: int32;
+}
+
+@doc("A completed order.")
+model Order {
+    id: int32;
+    status: string;
+    createdAt: string;
+    method: string;
+    name: string;
+    phone: string;
+    address: string | null;
+    total: Money;
+    items: OrderItem[];
+}
+
+@doc("Single item of a create order request.")
+model OrderItemInput {
+    slug: string;
+    quantity: int32;
+}
+
+@doc("Payload for order creation. Contains no prices.")
+model CreateOrderRequest {
+    method: "delivery" | "pickup";
+    name: string;
+    phone: string;
+    address?: string;
+    items: OrderItemInput[];
+}
+
+@doc("Problematic item that blocked an order.")
+model OrderErrorItem {
+    slug: string;
+    reason: string;
+}
+
+@doc("Order was rejected because some products are unavailable.")
+model OrderError extends ApiError {
+    unavailable: OrderErrorItem[];
+}
+
+// Операции заказов
+
+@route("/api/orders")
+@post
+@doc("Create a new order from the current cart.")
+op createOrder(@body body: CreateOrderRequest):
+    | {
+          @statusCode statusCode: 201;
+          @body order: Order;
+      }
+    | OrderError;
+
+@route("/api/orders")
+@get
+@doc("List orders of the current user.")
+op listOrders(): Order[];
+
+@route("/api/orders/{id}")
+@get
+@doc("Get a single order by id.")
+op getOrder(@path id: int32): Order | ApiError;

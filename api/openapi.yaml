@@ -100,6 +100,63 @@ paths:
                     type: string
                 required:
                   - status
+  /api/orders:
+    post:
+      operationId: createOrder
+      description: Create a new order from the current cart.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderError'
+        '201':
+          description: The request has succeeded and a new resource has been created as a result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+    get:
+      operationId: listOrders
+      description: List orders of the current user.
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+  /api/orders/{id}:
+    get:
+      operationId: getOrder
+      description: Get a single order by id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/Order'
+                  - $ref: '#/components/schemas/ApiError'
   /api/products:
     get:
       operationId: listProducts
@@ -233,6 +290,36 @@ components:
         name:
           type: string
       description: Product category.
+    CreateOrderRequest:
+      type: object
+      required:
+        - method
+        - name
+        - phone
+        - items
+      properties:
+        method:
+          type: string
+          enum:
+            - delivery
+            - pickup
+        name:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemInput'
+      description: Payload for order creation. Contains no prices.
+    DeliveryMethod:
+      type: string
+      enum:
+        - delivery
+        - pickup
+      description: Delivery or pickup.
     LoginRequest:
       type: object
       required:
@@ -253,6 +340,101 @@ components:
           type: integer
           format: int32
       description: Money amount in rubles
+    Order:
+      type: object
+      required:
+        - id
+        - status
+        - createdAt
+        - method
+        - name
+        - phone
+        - address
+        - total
+        - items
+      properties:
+        id:
+          type: integer
+          format: int32
+        status:
+          type: string
+        createdAt:
+          type: string
+        method:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+          nullable: true
+        total:
+          $ref: '#/components/schemas/Money'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+      description: A completed order.
+    OrderError:
+      type: object
+      required:
+        - unavailable
+      properties:
+        unavailable:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderErrorItem'
+      allOf:
+        - $ref: '#/components/schemas/ApiError'
+      description: Order was rejected because some products are unavailable.
+    OrderErrorItem:
+      type: object
+      required:
+        - slug
+        - reason
+      properties:
+        slug:
+          type: string
+        reason:
+          type: string
+      description: Problematic item that blocked an order.
+    OrderItem:
+      type: object
+      required:
+        - productId
+        - name
+        - price
+        - quantity
+      properties:
+        productId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        price:
+          $ref: '#/components/schemas/Money'
+        quantity:
+          type: integer
+          format: int32
+      description: Snapshot of a product inside an order.
+    OrderItemInput:
+      type: object
+      required:
+        - slug
+        - quantity
+      properties:
+        slug:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+      description: Single item of a create order request.
+    OrderStatus:
+      type: string
+      enum:
+        - paid
+      description: Order status.
     Product:
       type: object
       required:
