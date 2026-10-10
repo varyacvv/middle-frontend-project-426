@@ -23,6 +23,44 @@ interface ProductRow {
   in_stock: boolean;
 }
 
+interface OrderRow {
+  id: number;
+  status: string;
+  created_at: string;
+  method: string;
+  name: string;
+  phone: string;
+  address: string | null;
+  total: number;
+}
+
+interface OrderItemRow {
+  order_id: number;
+  product_id: number;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+}
+
+function mapOrder(order: OrderRow, items: OrderItemRow[]) {
+  return {
+    id: order.id,
+    status: order.status,
+    createdAt: order.created_at,
+    method: order.method,
+    name: order.name,
+    phone: order.phone,
+    address: order.address,
+    total: { amount: order.total },
+    items: items.map((i) => ({
+      productId: i.product_id,
+      name: i.product_name,
+      price: { amount: i.product_price },
+      quantity: i.quantity,
+    })),
+  };
+}
+
 export async function ordersRoutes(server: FastifyInstance) {
   server.post("/api/orders", async (request, reply) => {
     const sessionId = request.cookies[SESSION_COOKIE];
@@ -187,5 +225,97 @@ export async function ordersRoutes(server: FastifyInstance) {
     } finally {
       client.release();
     }
+  });
+
+  server.get("/api/orders", async (request, reply) => {
+    const sessionId = request.cookies[SESSION_COOKIE];
+    if (!sessionId) {
+      return reply
+        .code(401)
+        .send({ code: "unauthorized", message: "Not authenticated" });
+    }
+    const user = await findUserBySession(sessionId);
+    if (!user) {
+      return reply
+        .code(401)
+        .send({ code: "unauthorized", message: "Not authenticated" });
+    }
+
+    const ordersResult = await pool.query<OrderRow>(
+      `SELECT id, status, created_at, method, name, phone, address, total
+       FROM orders
+       WHERE user_id = $1
+       ORDER BY id DESC`,
+      [user.id],
+    );
+
+    if (ordersResult.rows.length === 0) {
+      return [];
+    }
+
+    const orderIds = ordersResult.rows.map((o) => o.id);
+    const itemsResult = await pool.query<OrderItemRow>(
+      `SELECT order_id, product_id, product_name, product_price, quantity
+       FROM order_items
+       WHERE order_id = ANY($1)
+       ORDER BY id`,
+      [orderIds],
+    );
+
+    const itemsByOrder = new Map<number, OrderItemRow[]>();
+    for (const item of itemsResult.rows) {
+      const list = itemsByOrder.get(item.order_id) ?? [];
+      list.push(item);
+      itemsByOrder.set(item.order_id, list);
+    }
+
+    return ordersResult.rows.map((order) =>
+      mapOrder(order, itemsByOrder.get(order.id) ?? []),
+    );
+  });
+
+  server.get("/api/orders/:id", async (request, reply) => {
+    const sessionId = request.cookies[SESSION_COOKIE];
+    if (!sessionId) {
+      return reply
+        .code(401)
+        .send({ code: "unauthorized", message: "Not authenticated" });
+    }
+    const user = await findUserBySession(sessionId);
+    if (!user) {
+      return reply
+        .code(401)
+        .send({ code: "unauthorized", message: "Not authenticated" });
+    }
+
+    const id = Number((request.params as { id: string }).id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return reply
+        .code(404)
+        .send({ code: "not_found", message: "Order not found" });
+    }
+
+    const orderResult = await pool.query<OrderRow>(
+      `SELECT id, status, created_at, method, name, phone, address, total
+       FROM orders
+       WHERE id = $1 AND user_id = $2`,
+      [id, user.id],
+    );
+
+    if (orderResult.rows.length === 0) {
+      return reply
+        .code(404)
+        .send({ code: "not_found", message: "Order not found" });
+    }
+
+    const itemsResult = await pool.query<OrderItemRow>(
+      `SELECT order_id, product_id, product_name, product_price, quantity
+       FROM order_items
+       WHERE order_id = $1
+       ORDER BY id`,
+      [id],
+    );
+
+    return mapOrder(orderResult.rows[0], itemsResult.rows);
   });
 }
