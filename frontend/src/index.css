@@ -1119,3 +1119,262 @@ body {
   font-weight: 600;
   line-height: 1;
 }
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 30px;
+  align-items: start;
+}
+
+.checkout-form {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.checkout-form h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+}
+
+.checkout-form label {
+  display: block;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+}
+
+.checkout-form input,
+.checkout-form select {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.checkout-form input:focus,
+.checkout-form select:focus {
+  outline: none;
+  border-color: #4e5fe1;
+}
+
+.checkout-submit {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.checkout-unavailable {
+  color: #dc2626;
+  font-size: 13px;
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.checkout-summary {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.checkout-summary h2 {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+.checkout-summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+
+.checkout-summary-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  padding: 6px 0;
+  color: #4b5563;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.checkout-summary-list li span:last-child {
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.checkout-summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 14px;
+  margin-top: 12px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.checkout-summary-total span:last-child {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.checkout-summary-note {
+  color: #9ca3af;
+  font-size: 12px;
+  margin: 12px 0 0;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.order-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #e6f7ee;
+  border: 1px solid #b8e6cd;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 30px;
+}
+
+.order-success-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #2ea36e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.order-success-banner h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+
+.order-success-meta {
+  margin: 0;
+  color: #2ea36e;
+  font-size: 14px;
+}
+
+.order-success-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 30px;
+  align-items: start;
+}
+
+.order-success-items,
+.order-success-summary {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.order-success-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.order-success-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.badge-paid {
+  background: #2ea36e;
+  color: #fff;
+}
+
+.order-success-items ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.order-success-items li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 14px;
+}
+
+.order-success-items li:last-child {
+  border-bottom: none;
+}
+
+.order-success-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.order-success-total-row span:last-child {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.order-success-recipient {
+  color: #6b7280;
+  font-size: 13px;
+  margin: 0 0 20px;
+}
+
+.order-success-btn {
+  display: block;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.order-success-link {
+  display: block;
+  text-align: center;
+  color: #4e5fe1;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.order-success-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .order-success-layout {
+    grid-template-columns: 1fr;
+  }
+}
