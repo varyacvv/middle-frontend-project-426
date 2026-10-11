@@ -1378,3 +1378,170 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.account-email {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0 0 30px;
+}
+
+.account-orders {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-order {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.account-order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.account-order-head-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.account-order-head-left strong {
+  font-size: 17px;
+}
+
+.account-order-head-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.account-order-date {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.account-order-toggle {
+  background: none;
+  border: none;
+  color: #4e5fe1;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 0;
+}
+
+.account-order-toggle:hover {
+  text-decoration: underline;
+}
+
+.account-order-table-head {
+  display: grid;
+  grid-template-columns: 1fr 80px 120px 120px;
+  gap: 16px;
+  color: #9ca3af;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.account-order-table-head span:nth-child(n + 2) {
+  text-align: right;
+}
+
+.account-order-lines {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-order-line {
+  display: grid;
+  grid-template-columns: 1fr 80px 120px 120px;
+  gap: 16px;
+  padding: 10px 0;
+  font-size: 14px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.account-order-line span:nth-child(n + 2) {
+  text-align: right;
+}
+
+.account-order-line-sum {
+  font-weight: 600;
+}
+
+.account-order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-top: 14px;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6b7280;
+  flex-wrap: wrap;
+}
+
+.account-order-total {
+  font-size: 15px;
+  color: #111827;
+}
+
+.account-order-total span {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.account-orders-empty {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.account-orders-empty p {
+  color: #6b7280;
+  margin: 0 0 20px;
+}
+
+.account-orders-empty .btn-primary {
+  display: inline-block;
+  padding: 12px 24px;
+  text-decoration: none;
+}
+
+.account-back {
+  margin: 24px 0 0;
+}
+
+.account-back a {
+  color: #4e5fe1;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.account-back a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .account-order-table-head,
+  .account-order-line {
+    grid-template-columns: 1fr 60px 90px;
+  }
+
+  .account-order-table-head span:last-child,
+  .account-order-line span:last-child {
+    display: none;
+  }
+}
