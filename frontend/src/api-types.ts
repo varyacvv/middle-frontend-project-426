@@ -323,6 +323,8 @@ export interface components {
         "ProductListParams.category": string;
         /** @description Page number, 1-based. */
         "ProductListParams.page": number;
+        /** @description Page size. Maximum 50. */
+        "ProductListParams.pageSize": number;
         /** @description Maximum price in whole rubles. */
         "ProductListParams.priceMax": number;
         /** @description Minimum price in whole rubles. */
@@ -563,6 +565,8 @@ export interface operations {
                 search?: components["parameters"]["ProductListParams.search"];
                 /** @description Page number, 1-based. */
                 page?: components["parameters"]["ProductListParams.page"];
+                /** @description Page size. Maximum 50. */
+                pageSize?: components["parameters"]["ProductListParams.pageSize"];
             };
             header?: never;
             path?: never;

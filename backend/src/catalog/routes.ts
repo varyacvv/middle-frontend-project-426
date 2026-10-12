@@ -1,7 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import { pool } from "../db.js";
 
-const PAGE_SIZE = 12;
+const DEFAULT_PAGE_SIZE = 12;
+const MAX_PAGE_SIZE = 50;
 
 interface ProductRow {
   id: number;
@@ -23,6 +24,7 @@ interface ListProductsQuery {
   available?: string;
   search?: string;
   page?: string;
+  pageSize?: string;
 }
 
 function mapProduct(row: ProductRow) {
@@ -42,6 +44,13 @@ function mapProduct(row: ProductRow) {
   };
 }
 
+function parseNumber(value: string | undefined): number | null | undefined {
+  if (value === undefined) return undefined;
+  const n = Number(value);
+  if (!Number.isInteger(n)) return null;
+  return n;
+}
+
 export async function catalogRoutes(server: FastifyInstance) {
   server.get("/api/categories", async () => {
     const result = await pool.query(
@@ -50,8 +59,43 @@ export async function catalogRoutes(server: FastifyInstance) {
     return result.rows;
   });
 
-  server.get("/api/products", async (request) => {
+  server.get("/api/products", async (request, reply) => {
     const q = request.query as ListProductsQuery;
+
+    const priceMin = parseNumber(q.priceMin);
+    if (priceMin !== undefined && priceMin === null) {
+      return reply.code(400).send({
+        code: "validation_error",
+        message: "priceMin must be a number",
+      });
+    }
+
+    const priceMax = parseNumber(q.priceMax);
+    if (priceMax !== undefined && priceMax === null) {
+      return reply.code(400).send({
+        code: "validation_error",
+        message: "priceMax must be a number",
+      });
+    }
+
+    const page = parseNumber(q.page);
+    if (page !== undefined && (page === null || page < 1)) {
+      return reply.code(400).send({
+        code: "validation_error",
+        message: "page must be a positive integer",
+      });
+    }
+
+    const pageSize = parseNumber(q.pageSize);
+    if (
+      pageSize !== undefined &&
+      (pageSize === null || pageSize < 1 || pageSize > MAX_PAGE_SIZE)
+    ) {
+      return reply.code(400).send({
+        code: "validation_error",
+        message: `pageSize must be between 1 and ${MAX_PAGE_SIZE}`,
+      });
+    }
 
     const conditions: string[] = [];
     const params: unknown[] = [];
@@ -61,13 +105,13 @@ export async function catalogRoutes(server: FastifyInstance) {
       conditions.push(`c.slug = $${params.length}`);
     }
 
-    if (q.priceMin && !Number.isNaN(Number(q.priceMin))) {
-      params.push(Number(q.priceMin));
+    if (priceMin !== undefined && priceMin !== null) {
+      params.push(priceMin);
       conditions.push(`p.price >= $${params.length}`);
     }
 
-    if (q.priceMax && !Number.isNaN(Number(q.priceMax))) {
-      params.push(Number(q.priceMax));
+    if (priceMax !== undefined && priceMax !== null) {
+      params.push(priceMax);
       conditions.push(`p.price <= $${params.length}`);
     }
 
@@ -83,8 +127,8 @@ export async function catalogRoutes(server: FastifyInstance) {
     const where =
       conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
-    const pageRaw = Number(q.page);
-    const page = Number.isInteger(pageRaw) && pageRaw > 0 ? pageRaw : 1;
+    const resolvedPage = page ?? 1;
+    const resolvedPageSize = pageSize ?? DEFAULT_PAGE_SIZE;
 
     const countResult = await pool.query<{ count: string }>(
       `SELECT COUNT(*) AS count
@@ -95,7 +139,7 @@ export async function catalogRoutes(server: FastifyInstance) {
     );
     const total = Number(countResult.rows[0].count);
 
-    const offset = (page - 1) * PAGE_SIZE;
+    const offset = (resolvedPage - 1) * resolvedPageSize;
     const itemsResult = await pool.query<ProductRow>(
       `SELECT
          p.id, p.slug, p.name, p.description, p.price, p.in_stock, p.image_url,
@@ -105,12 +149,17 @@ export async function catalogRoutes(server: FastifyInstance) {
        ${where}
        ORDER BY p.id
        LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
-      [...params, PAGE_SIZE, offset],
+      [...params, resolvedPageSize, offset],
     );
 
     const items = itemsResult.rows.map(mapProduct);
 
-    return { items, total, page, pageSize: PAGE_SIZE };
+    return {
+      items,
+      total,
+      page: resolvedPage,
+      pageSize: resolvedPageSize,
+    };
   });
 
   server.get("/api/products/:slug", async (request, reply) => {

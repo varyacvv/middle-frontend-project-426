@@ -168,6 +168,7 @@ paths:
         - $ref: '#/components/parameters/ProductListParams.available'
         - $ref: '#/components/parameters/ProductListParams.search'
         - $ref: '#/components/parameters/ProductListParams.page'
+        - $ref: '#/components/parameters/ProductListParams.pageSize'
       responses:
         '200':
           description: The request has succeeded.
@@ -233,6 +234,15 @@ components:
       in: query
       required: false
       description: Page number, 1-based.
+      schema:
+        type: integer
+        format: int32
+      explode: false
+    ProductListParams.pageSize:
+      name: pageSize
+      in: query
+      required: false
+      description: Page size. Maximum 50.
       schema:
         type: integer
         format: int32

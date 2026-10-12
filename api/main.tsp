@@ -112,6 +112,10 @@ model ProductListParams {
     @doc("Page number, 1-based.")
     @query
     page?: int32;
+
+    @doc("Page size. Maximum 50.")
+    @query
+    pageSize?: int32;
 }
 
 @doc("Paginated list of products.")

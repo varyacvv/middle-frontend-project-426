@@ -136,3 +136,18 @@ test("Кнопка 'назад' после смены фильтра возвр�
   await expect(page.getByTestId("filter-category")).toHaveValue("videocards");
   await expect(page.getByTestId("catalog-item")).toHaveCount(10);
 });
+
+test("невалидный priceMin возвращает 400", async ({ request }) => {
+  const res = await request.get("/api/products?priceMin=abc");
+  expect(res.status()).toBe(400);
+});
+
+test("page=0 возвращает 400", async ({ request }) => {
+  const res = await request.get("/api/products?page=0");
+  expect(res.status()).toBe(400);
+});
+
+test("pageSize сверх лимита возвращает 400", async ({ request }) => {
+  const res = await request.get("/api/products?pageSize=999");
+  expect(res.status()).toBe(400);
+});
