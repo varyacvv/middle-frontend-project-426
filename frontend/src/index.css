@@ -517,15 +517,14 @@ body {
 @media (max-width: 600px) {
   .header {
     padding: 12px 15px;
-    gap: 12px;
-  }
-
-  .header-nav {
-    gap: 14px;
+    gap: 8px;
+    flex-wrap: wrap;
+    row-gap: 10px;
   }
 
   .logo {
-    font-size: 14px;
+    font-size: 13px;
+    gap: 6px;
   }
 
   .logo-mark {
@@ -533,15 +532,30 @@ body {
     height: 8px;
   }
 
+  .header-nav {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
   .header-nav a,
   .btn-primary,
   .btn-light {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .btn-primary,
   .btn-light {
-    padding: 7px 12px;
+    padding: 6px 10px;
+  }
+
+  .nav-cart-count {
+    min-width: 16px;
+    height: 16px;
+    padding: 0 5px;
+    font-size: 10px;
   }
 
   .catalog {
