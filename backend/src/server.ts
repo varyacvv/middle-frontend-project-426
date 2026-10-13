@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export function buildServer() {
-  const server = Fastify({ logger: true });
+  const server = Fastify({ logger: true, trustProxy: true });
 
   server.register(fastifyCookie);
 

@@ -1,5 +1,5 @@
 import "@fastify/cookie";
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
 import { pool } from "../db.js";
 import { hashPassword, verifyPassword } from "./password.js";
 import {
@@ -18,12 +18,14 @@ const MIN_PASSWORD_LENGTH = 6;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const COOKIE_OPTIONS = {
-  path: "/",
-  httpOnly: true,
-  sameSite: "lax" as const,
-  secure: process.env.NODE_ENV === "production",
-};
+function cookieOptions(request: FastifyRequest) {
+  return {
+    path: "/",
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: request.protocol === "https",
+  };
+}
 
 export async function authRoutes(server: FastifyInstance) {
   // Регистрация
@@ -57,7 +59,7 @@ export async function authRoutes(server: FastifyInstance) {
       const user = result.rows[0];
 
       const sessionId = await createSession(user.id);
-      reply.setCookie(SESSION_COOKIE, sessionId, COOKIE_OPTIONS);
+      reply.setCookie(SESSION_COOKIE, sessionId, cookieOptions(request));
 
       return reply.code(201).send(user);
     } catch (err) {
@@ -112,7 +114,7 @@ export async function authRoutes(server: FastifyInstance) {
     }
 
     const sessionId = await createSession(user.id);
-    reply.setCookie(SESSION_COOKIE, sessionId, COOKIE_OPTIONS);
+    reply.setCookie(SESSION_COOKIE, sessionId, cookieOptions(request));
 
     return { id: user.id, email: user.email };
   });
