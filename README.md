@@ -18,9 +18,27 @@
 
 <https://middle-frontend-project-426-vp2e.onrender.com>
 
+## Мониторинг ошибок
+
+Сервис: Bugsink (<https://varyapezhik.bugsink.com/>).
+
+### Frontend
+
+![Frontend error](docs/monitoring-frontend.png)
+
+### Backend
+
+![Backend error](docs/monitoring-backend.png)
+
 ## Стек
 
-- JavaScript
+- Frontend: React + TypeScript + Vite
+- Backend: Fastify + TypeScript
+- База данных: PostgreSQL 16
+- API: TypeSpec → OpenAPI
+- Тесты: Playwright
+- Мониторинг: Bugsink (Sentry SDK)
+- Деплой: Docker на Render
 
 ## Установка
 
