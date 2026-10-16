@@ -1559,3 +1559,11 @@ body {
     display: none;
   }
 }
+
+.field-error {
+  display: block;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 400;
+  margin-top: 4px;
+}

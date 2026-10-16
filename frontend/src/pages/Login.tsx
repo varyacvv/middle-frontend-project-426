@@ -1,18 +1,50 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
 import { useAuth } from '../context/useAuth'
 import { errorMessage } from '../api/auth'
+
+const schema = yup.object({
+    email: yup
+        .string()
+        .required('Введите email')
+        .email('Некорректный email'),
+    password: yup.string().required('Введите пароль'),
+})
+
+interface FieldErrors {
+    email?: string
+    password?: string
+}
 
 export function Login() {
     const { login } = useAuth()
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
     const [error, setError] = useState('')
     const [submitting, setSubmitting] = useState(false)
 
     async function handleSubmit() {
         setError('')
+        setFieldErrors({})
+
+        try {
+            await schema.validate({ email, password }, { abortEarly: false })
+        } catch (err) {
+            if (err instanceof yup.ValidationError) {
+                const errors: FieldErrors = {}
+                for (const issue of err.inner) {
+                    if (issue.path === 'email') errors.email = issue.message
+                    if (issue.path === 'password') errors.password = issue.message
+                }
+                setFieldErrors(errors)
+                return
+            }
+            throw err
+        }
+
         setSubmitting(true)
         try {
             await login(email, password)
@@ -40,8 +72,10 @@ export function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         data-testid="auth-email"
-                        required
                     />
+                    {fieldErrors.email && (
+                        <span className="field-error">{fieldErrors.email}</span>
+                    )}
                 </label>
                 <label>
                     Пароль
@@ -50,8 +84,10 @@ export function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         data-testid="auth-password"
-                        required
                     />
+                    {fieldErrors.password && (
+                        <span className="field-error">{fieldErrors.password}</span>
+                    )}
                 </label>
                 <button type="submit" disabled={submitting} data-testid="auth-submit">
                     Войти
